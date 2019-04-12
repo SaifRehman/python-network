@@ -1,2 +1,22 @@
-def foo(event, context):
-    return "hello world"
+#!flask/bin/python
+from flask import request
+from flask import abort
+from flask import Flask, jsonify
+import nmap 
+app = Flask(__name__)
+nmap = nmap.PortScanner()
+@app.route('/healthz')
+def index():
+    return "Hello, World!"
+
+@app.route('/scan', methods=['POST'])
+def create_task():
+    if not request.json or not 'server' in request.json:
+        abort(400)
+
+    if not request.json or not 'portrange' in request.json:
+        abort(400)
+    data = nmap.scan(request.json['server'], request.json['portrange'])
+    return jsonify({'data': data}), 201
+if __name__ == '__main__':
+    app.run(host='0.0.0.0',port=4000)

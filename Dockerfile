@@ -1,10 +1,12 @@
 FROM ubuntu
-
-RUN apt-get update -yq && \
-    apt-get upgrade -yq && \
-    apt-get install -y openssh-server && \
-    mkdir /var/run/sshd
-
-RUN echo root:root | chpasswd
-EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
+WORKDIR /app
+COPY . /app
+RUN apt-get update -yq \
+    && apt-get install curl gnupg -yq \
+    && apt-get install python2.7 python-pip  -yq \
+    && python -m pip install -r requirements.txt
+EXPOSE 4000 
+RUN groupadd -g 999 appuser && \
+    useradd -r -u 999 -g appuser appuser
+USER appuser
+CMD [ "python", "portscan.py" ]
