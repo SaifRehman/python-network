@@ -1,0 +1,68 @@
+replicaCount: 2
+secretnamespace: default
+confignamespace: default
+metadata:
+ name: scansvc 
+ label: scansvc
+readinessProbe:
+  path: /healthz
+  port: 4000
+  initialDelaySeconds: 10
+  timeoutSeconds: 2
+  periodSeconds: 10
+
+livenessProbe:
+  path: /healthz
+  port: 4000
+  initialDelaySeconds: 10
+  timeoutSeconds: 2
+  periodSeconds: 10
+image:
+  name: scansvc
+  imageName: "mycluster.icp:8500/default/scan:0.0.1" 
+  imagePullPolicy: Always
+  ports:
+    containerPort: 4000
+  requests:
+    cpu: "50m"
+    memory: "200Mi"
+  limits:
+    cpu: "80m"
+    memory: "210Mi"
+  maxSurge: 1
+  maxUnavailable: 0
+  lifecycle:
+    preStop:
+      command: ["/bin/bash", "-c", "sleep 20"]
+
+
+hpa:
+  metadata:
+    name: scansvcmicroservicehpa
+  spec:
+    maxReplicas: 10
+    minReplicas: 2
+  metrics:
+    pods:
+      targetAverageValue: 20
+    resource:
+      name: cpu
+      targetAverageUtilization: 75
+    memory:
+      targetAverageUtilization: 75
+  scaleTargetRef:  
+    name: scansvc
+
+service:
+  serviceMetadata:
+    name: scansvc
+    labels:
+      app: scansvc
+  selector:
+    selectorName: scansvc
+  servicePortConfiguration:
+    protocol: TCP
+    name: scansvc
+    type: ClusterIP
+    port: 4000
+    targetPort: 4000

@@ -7,13 +7,12 @@ app = Flask(__name__)
 nmap = nmap.PortScanner()
 @app.route('/healthz')
 def index():
-    return "Hello, World!"
+    return "success"
 
 @app.route('/scan', methods=['POST'])
 def create_task():
     if not request.json or not 'server' in request.json:
         abort(400)
-
     if not request.json or not 'portrange' in request.json:
         abort(400)
     data = nmap.scan(request.json['server'], request.json['portrange'])
