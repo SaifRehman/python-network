@@ -7,7 +7,7 @@ RUN apt-get update -yq \
     && python -m pip install -r requirements.txt\
     && apt-get install nmap -yq
 EXPOSE 4000 
-RUN groupadd -g 999 appuser && \
-    useradd -r -u 999 -g appuser appuser
-USER appuser
+# RUN groupadd -g 999 appuser && \
+#     useradd -r -u 999 -g appuser appuser
+# USER appuser
 CMD [ "python", "portscan.py" ]

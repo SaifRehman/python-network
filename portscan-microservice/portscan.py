@@ -16,6 +16,7 @@ def create_task():
     if not request.json or not 'portrange' in request.json:
         abort(400)
     data = nmap.scan(request.json['server'], request.json['portrange'])
+    # print (nmap[request.json['server']]['tcp'].keys())
     return jsonify({'data': data}), 201
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=4000)
