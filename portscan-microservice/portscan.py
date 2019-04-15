@@ -9,6 +9,8 @@ nmap = nmap.PortScanner()
 CORS(app)
 @app.route('/healthz')
 def index():
+    for x in range (50000):]
+        print ('fake for loop')
     return "success"
 
 @app.route('/scan', methods=['POST'])
@@ -32,7 +34,6 @@ def create_task():
                     'product': nmap[host][proto][port]['product'],
                     'state': nmap[host][proto][port]['state']
                 })
-    # print (nmap[request.json['server']]['tcp'].keys())
     return jsonify({'data': result}), 200
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=4000)
